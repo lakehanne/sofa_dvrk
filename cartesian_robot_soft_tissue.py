@@ -6,7 +6,7 @@ import numpy as np
 from pathlib import Path
 import geometry_util as geo
 
-use_network = True
+use_network = False
 if use_network:
     import torch
     sys.path.insert(0,'../network/deformable/')
@@ -22,10 +22,10 @@ if use_network:
         corrected = mesh + x
         return corrected
 
-    
+
 time_scale = 200.0
 # Average from rosbags (time/# messages), 12 and potentially future 13 are calibration(2) bag
-all_time_steps = [0.0332, 0.0332, 0.0329, 0.0332, 0.0332, 0.0333, 0.0331, 0.0332, 0.0332, 0.0328, 0.0455, 0.0473] 
+all_time_steps = [0.0332, 0.0332, 0.0329, 0.0332, 0.0332, 0.0333, 0.0331, 0.0332, 0.0332, 0.0328, 0.0455, 0.0473]
 data_file = 2
 folder_name = 'data' + str(data_file)
 #folder_name = 'calibration'
@@ -40,12 +40,12 @@ class MeshEnv (Sofa.PythonScriptController):
     # If using network
     if use_network:
         in_channels = 3
-        out_channels = 3        
+        out_channels = 3
         network_path = Path('../network/deformable/checkpoints/models/model_14.pt')
-        device = torch.device('cuda') 
-    
+        device = torch.device('cuda')
+
     # Set so the first position is at centre of the platform
-    def __init__(self, node, commandLineArguments) : 
+    def __init__(self, node, commandLineArguments) :
         self.count = self.commandLineArguments = commandLineArguments
         print("Command line arguments for python : "+str(commandLineArguments))
 #        self.robot_pos = np.genfromtxt('../dataset/test/' + 'data_cartesian_processed.csv', delimiter=',')
@@ -65,7 +65,7 @@ class MeshEnv (Sofa.PythonScriptController):
         rootNode.createObject('VisualStyle', displayFlags='showBehaviorModels showCollisionModels hideVisualModels')# showInteractionForceFields showForceFields')
         rootNode.createObject('FreeMotionAnimationLoop', solveVelocityConstraintFirst=0)
         rootNode.createObject('LCPConstraintSolver', maxIt=1000, tolerance=1e-9, mu=0.9)
-        rootNode.createObject('DefaultPipeline', depth=5, verbose=0, draw=0)  
+        rootNode.createObject('DefaultPipeline', depth=5, verbose=0, draw=0)
         rootNode.createObject('BruteForceDetection')
         rootNode.createObject('MinProximityIntersection', contactDistance=0.5, alarmDistance=1)
         rootNode.createObject('DefaultContactManager', name='Response', response='FrictionContact')
@@ -103,17 +103,17 @@ class MeshEnv (Sofa.PythonScriptController):
 #                                                        477, 1701, 1080, 1648
 #                                                        ])
 
-        
+
 # This is for SimpleBeamHexa_fine.msh
 #        Phantom.createObject('FixedConstraint', indices=[0,3,12,15,68,17,123,121,21,145,13, 210, 38, 227, 14, 292, 52, 309, 308, 50, 267, 270, 49, 246, 2, 188,35, 164,1, 99, 16, 66, 75, 64, 128, 128, 28, 63, 149, 97, 104, 96, 19, 144, 214, 162, 169, 120, 209, 43, 161, 193, 186, 231, 185, 36, 226, 296, 244, 251, 243, 57, 291, 313, 268, 275])
 #        Phantom.createObject('MeshExporter', filename='test/mesh', position='@mecha.position', edges='@container.edges', triangles='@container.triangles', tetras='@container.tetras', exportEveryNumberOfSteps=1, format='gmsh')
-        
+
         # # Visual Node
         # VisuNode = Phantom.createChild('Visu_Cyl')
         # VisuNode.createObject('MeshSTLLoader', name='loader', filename='meshes/gel_phantom_1_fine.stl')
         # VisuNode.createObject('OglModel', name='visual', src='@loader', color='yellow')
         # VisuNode.createObject('BarycentricMapping', input='@../mecha', output='@visual')
-        
+
         # Collision Node
         CollNode = Phantom.createChild('Coll')
         CollNode.createObject('MeshTopology', src="@../loader")
@@ -183,7 +183,7 @@ class MeshEnv (Sofa.PythonScriptController):
 
     def onMouseWheel(self, mouseX,mouseY,wheelDelta):
         ## usage e.g.
-        #if isPressed : 
+        #if isPressed :
         #    print "Control button pressed+mouse wheel turned at position "+str(mouseX)+", "+str(mouseY)+", wheel delta"+str(wheelDelta)
         return 0
 
@@ -237,12 +237,12 @@ class MeshEnv (Sofa.PythonScriptController):
 
     def onMouseButtonMiddle(self, mouseX,mouseY,isPressed):
         ## usage e.g.
-        #if isPressed : 
+        #if isPressed :
         #    print "Control+Middle mouse button pressed at position "+str(mouseX)+", "+str(mouseY)
         return 0
 
     def bwdInitGraph(self, node):
-        ## Please feel free to add an example for a simple usage in /home/trs/sofa/build/unstable//home/trs/sofa/src/sofa/applications/plugins/SofaPython/scn2python.py        
+        ## Please feel free to add an example for a simple usage in /home/trs/sofa/build/unstable//home/trs/sofa/src/sofa/applications/plugins/SofaPython/scn2python.py
         return 0
 
     def onScriptEvent(self, senderNode, eventName,data):
@@ -277,12 +277,12 @@ def createScene(rootNode):
     np.set_printoptions(threshold=sys.maxsize)
     rootNode.findData('dt').value = all_time_steps[data_file]/time_scale
     rootNode.findData('gravity').value = '0 0 0'
-    try : 
+    try :
         sys.argv[0]
     except :
         commandLineArguments = []
     else :
         commandLineArguments = sys.argv
     my_env = MeshEnv(rootNode,commandLineArguments)
-    
+
     return 0

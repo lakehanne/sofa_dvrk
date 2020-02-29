@@ -9,14 +9,14 @@ class RobotEnv(Sofa.PythonScriptController):
     joints = np.zeros(6)
     step = 0.02
     axis_scale=100
-    
+
     def __init__(self, node, commandLineArguments):
         self.count = 0
         self.commandLineArguments = commandLineArguments
         print("Command line arguments for python : " + str(commandLineArguments))
 
         self.joints = np.array([0.6, 0.2, 0.75, 3.14, 0.0, 0.0])
-        self.robot.LoadRobot('/home/jieying/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/deprecated/dvpsm.rob')
+        self.robot.LoadRobot('../../ros/sawIntuitiveResearchKit/share/deprecated/dvpsm.rob')
         self.createGraph(node)
 
 
@@ -34,11 +34,11 @@ class RobotEnv(Sofa.PythonScriptController):
         rootNode.createObject('EulerImplicitSolver', printLog='false', rayleighStiffness='0.1', name='odesolver', rayleighMass='0.1')
         rootNode.createObject('CGLinearSolver', threshold='1e-8', tolerance='1e-5', name='linearSolver', iterations='25')
 
-        
+
         # rootNode/Link0
         pose = self.robot.ForwardKinematics(self.joints, N=0)
         link0_pos = geo.matToPos(pose)
-        
+
         Link0 = rootNode.createChild('Link0')
         self.Link0 = Link0
         Link0.createObject('MechanicalObject', name='mecha', template='Rigid3d', position=link0_pos)
@@ -46,7 +46,7 @@ class RobotEnv(Sofa.PythonScriptController):
         # rootNode/Link1
         pose = self.robot.ForwardKinematics(self.joints, N=1)
         link1_pos = geo.matToPos(pose)
-        
+
         Link1 = rootNode.createChild('Link1')
         self.Link1 = Link1
         Link1.createObject('MechanicalObject', name='mecha', template='Rigid3d', position=link1_pos)
@@ -54,7 +54,7 @@ class RobotEnv(Sofa.PythonScriptController):
         # rootNode/Link2
         pose = self.robot.ForwardKinematics(self.joints, N=2)
         link2_pos = geo.matToPos(pose)
-        
+
         Link2 = rootNode.createChild('Link2')
         self.Link2 = Link2
         Link2.createObject('MechanicalObject', name='mecha', template='Rigid3d', position=link2_pos)
@@ -62,7 +62,7 @@ class RobotEnv(Sofa.PythonScriptController):
         # rootNode/Link3
         pose = self.robot.ForwardKinematics(self.joints, N=3)
         link3_pos = geo.matToPos(pose)
-        
+
         Link3 = rootNode.createChild('Link3')
         self.Link3 = Link3
         Link3.createObject('MechanicalObject', name='mecha', template='Rigid3d', position=link3_pos)
@@ -70,7 +70,7 @@ class RobotEnv(Sofa.PythonScriptController):
         # rootNode/Link4
         pose = self.robot.ForwardKinematics(self.joints, N=4)
         link4_pos = geo.matToPos(pose)
-        
+
         Link4 = rootNode.createChild('Link4')
         self.Link4 = Link4
         Link4.createObject('MechanicalObject', name='mecha', template='Rigid3d', position=link4_pos)
@@ -78,7 +78,7 @@ class RobotEnv(Sofa.PythonScriptController):
         # rootNode/Link5
         pose = self.robot.ForwardKinematics(self.joints, N=5)
         link5_pos = geo.matToPos(pose)
-        
+
         Link5 = rootNode.createChild('Link5')
         self.Link5 = Link5
         Link5.createObject('MechanicalObject', name='mecha', template='Rigid3d', position=link5_pos)
@@ -113,15 +113,15 @@ class RobotEnv(Sofa.PythonScriptController):
         l4Pos = geo.matToPos(l4Pos)
         l5Pos = self.robot.ForwardKinematics(self.joints, N=5)
         l5Pos = geo.matToPos(l5Pos)
-        
+
         self.Link0.getObject('mecha').position = l0Pos
         self.Link1.getObject('mecha').position = l1Pos
         self.Link2.getObject('mecha').position = l2Pos
         self.Link3.getObject('mecha').position = l3Pos
         self.Link4.getObject('mecha').position = l4Pos
         self.Link5.getObject('mecha').position = l5Pos
-        
-        
+
+
     # Note: Hold control when key is pressed
     def onKeyPressed(self, c):
         # usage e.g.
@@ -202,11 +202,11 @@ class RobotEnv(Sofa.PythonScriptController):
 
     def onBeginAnimationStep(self, deltaTime):
         return 0
-    
+
 def createScene(rootNode):
     rootNode.findData('dt').value = '0.02'
     rootNode.findData('gravity').value = '0 0 0'
-    
+
     try:
         sys.argv[0]
     except:
